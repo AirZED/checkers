@@ -1,5 +1,3 @@
-use std::{fmt::Result, vec};
-
 use crate::{Coordinate, GamePiece, PieceColor};
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -62,7 +60,7 @@ impl GameEngine {
         let Coordinate(x, y) = coord;
 
         if x <= 7 && y <= 7 && x >= 0 && y >= 0 {
-            Ok(self.board[x][y])
+            Ok(&self.board[x][y])
         } else {
             Err(())
         }
@@ -149,7 +147,7 @@ impl GameEngine {
         }
     }
 
-    fn legal_moves(&mut self, loc: Coordinate) -> Vec<Move> {
+    fn legal_moves(&mut self) -> Vec<Move> {
         let mut moves: Vec<Move> = Vec::new();
 
         for x in 0..8 {
@@ -158,6 +156,7 @@ impl GameEngine {
                     if piece.color == self.current_turn {
                         let loc = Coordinate(x, y);
                         let mut valid_moves = self.get_valid_moves(loc);
+                        moves.append(&mut valid_moves);
                     }
                 }
             }
@@ -240,6 +239,38 @@ impl GameEngine {
 
         if ty < fy && piece.color == PieceColor::WHITE && piece.crowned {
             // white crowned moves up
+            valid = true;
+        }
+
+        valid
+    }
+
+    fn valid_move(&mut self, piece: &GamePiece, from: &Coordinate, to: &Coordinate) -> bool {
+        if !to.is_on_board() || !from.is_on_board() {
+            return false;
+        }
+
+        let Coordinate(tx, ty) = *to;
+        let Coordinate(fx, fy) = *from;
+
+        if let Some(_) = self.board[tx][ty] {
+            return false;
+        }
+
+        let mut valid = false;
+        if ty > fy && piece.color == PieceColor::WHITE {
+            valid = true;
+        }
+
+        if ty < fy && piece.color == PieceColor::BLACK {
+            valid = true;
+        }
+
+        if ty > fy && piece.color == PieceColor::BLACK && piece.crowned {
+            valid = true;
+        }
+
+        if ty < fy && piece.color == PieceColor::WHITE && piece.crowned {
             valid = true;
         }
 
