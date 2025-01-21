@@ -1,0 +1,9 @@
+
+[build]
+target = "./index.html"
+minify = "never" 
+
+[serve]
+port = 1420
+open = false
+
