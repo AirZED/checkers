@@ -1,4 +1,5 @@
 use crate::{Coordinate, GamePiece, Move, PieceColor, GAME_ENGINE};
+use wasm_bindgen::prelude::*;
 
 const PIECEFLAG_BLACK: u8 = 1;
 const PIECEFLAG_WHITE: u8 = 2;
@@ -26,7 +27,7 @@ extern "C" {
     fn notify_piececrowned(x: i32, y: i32);
 }
 
-#[no_mangle]
+#[wasm_bindgen]
 pub extern "C" fn get_piece(x: i32, y: i32) -> i32 {
     let engine = GAME_ENGINE.read().unwrap();
     let piece = engine.get_piece(Coordinate(x as usize, y as usize));
@@ -36,13 +37,13 @@ pub extern "C" fn get_piece(x: i32, y: i32) -> i32 {
     }
 }
 
-#[no_mangle]
+#[wasm_bindgen]
 pub extern "C" fn get_current_turn() -> i32 {
     let engine = GAME_ENGINE.read().unwrap();
     GamePiece::new(engine.get_current_turn()).into()
 }
 
-#[no_mangle]
+#[wasm_bindgen]
 pub extern "C" fn move_piece(from_x: i32, from_y: i32, to_x: i32, to_y: i32) -> i32 {
     let mut engine = GAME_ENGINE.write().unwrap();
 

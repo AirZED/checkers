@@ -5,7 +5,6 @@ mod board;
 use board::*;
 
 mod wasm;
-use wasm::*;
 
 #[macro_use]
 extern crate lazy_static;
